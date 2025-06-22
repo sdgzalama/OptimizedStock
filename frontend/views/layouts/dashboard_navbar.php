@@ -21,18 +21,28 @@
     <!--- Menu -->
     <div class="scrollbar" data-simplebar>
         <ul class="menu" data-fc-type="accordion">
-            <li class="menu-title">Navigation</li>
+            
             <li class="menu-item">
                 <a href="<?= \yii\helpers\Url::to(['site/dashboard','view' => 'dashboard']) ?>" data-fc-type="collapse"
                     class="menu-link">
                     <span class="menu-icon">
                         <i class="ri-home-4-line"></i>
                     </span>
-                    <span class="menu-text"> Dashboard </span>
-                    <span class="badge bg-success rounded-full">2</span>
+                    <span class="menu-text"> Home</span>
                 </a>
             </li>
-            <li class="menu-title">Inventory</li>
+            <li class="menu-title">Navigation</li>
+             <li class="menu-item">
+                <a href="<?= \yii\helpers\Url::to(['site/dashboard', 'view' => 'sale']) ?>" data-fc-type="collapse" class="menu-link">
+                    <span class="menu-icon">
+                        <i class="ri-shopping-cart-2-line"></i>
+                    </span>
+                    <span class="menu-text"><b>POS</b> </span>
+                    <span class=""></span>
+                </a>
+                
+            </li>
+            <li class="menu-title">Stock</li>
             <li class="menu-item">
                 <a href="<?= \yii\helpers\Url::to(['site/index', 'showAddStock' => 1]) ?>" class="menu-link"><span class="menu-icon"><i class="ri-add-line"></i></span><span class="menu-text">Add Stock</span></a>
                 
@@ -42,7 +52,7 @@
                     <span class="menu-icon">
                         <i class="ri-database-2-line"></i>
                     </span>
-                    <span class="menu-text"> Stock </span>
+                    <span class="menu-text"> Inventory </span>
                     <span class="menu-arrow"></span>
                 </a>
                 <ul class="sub-menu hidden">
@@ -61,8 +71,25 @@
                             <span class="menu-text">Stock Adjustment</span>
                         </a>
                     </li>
+                    <li class="menu-item">
+                        <a href="" class="menu-link">
+                            <span class="menu-text">Sale</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
+             <li class="menu-title">Reports</li>
+            <li class="menu-item">
+                <a href="<?= \yii\helpers\Url::to(['site/dashboard','view'=> 'salesrpt'])?>" class="menu-link">
+                    <span class="menu-icon">
+                        <i class="ri-bar-chart-2-line"></i>
+                    </span>
+                    <span class="menu-text">Reports</span>
+                    <span class="badge bg-success rounded-md">
+                    <i class="ri-file-chart-line"></i>
+                    </span>
+                </a>
+
             <li class="menu-item">
                 <a href="<?= \yii\helpers\Url::to(['site/dashboard','view'=> 'members'])?>" class="menu-link">
                     <span class="menu-icon">

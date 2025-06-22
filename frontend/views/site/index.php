@@ -80,6 +80,12 @@ $this->title = 'Dashboard';
             <?php elseif ($view == 'adjust_stock'):?>
             <?= $this->render('_adjust_stock') ?>
 
+            <?php elseif ($view == 'sale'): ?>
+            <?= $this->render('_sale',['stocks'=>$stocks]) ?>
+
+            <?php elseif ($view == 'salesrpt'): ?>
+                <?= $this->render('_salesrpt', ['sales' => $sales]) ?>
+
             <?php endif; ?>
 
         </div>

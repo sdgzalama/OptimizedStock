@@ -19,6 +19,8 @@ class AddStockForm extends Model
     public $quantity;
     public $buying_price;
     public $selling_price;
+    public $stock_id;
+    
 
     /**
      * {@inheritdoc}

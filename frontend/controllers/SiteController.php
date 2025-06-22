@@ -23,6 +23,8 @@ use frontend\models\AddStockForm;
 use yii\web\ErrorAction;
 use yii\widgets\ActiveForm;
 use frontend\models\Stock;
+use frontend\models\Sale;
+use frontend\models\SaleItem;
 /**
  * Site controller
  */
@@ -129,16 +131,114 @@ class SiteController extends Controller
 
         $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
 
-        
+    $sales = \frontend\models\Sale::find()->orderBy(['created_at' => SORT_DESC])->all();
 
         return $this->render('index', [ //Pass $model to the view
             'model' => $model,
             'view' => $view,
-
+            'sales' => $sales,
             'showAddStock' => $showAddStock,
             'stocks'=> $stocks
         ]);
     }
+   public function actionSale()
+{
+    if (Yii::$app->request->isPost) {
+        $post = Yii::$app->request->post();
+
+        $customerName = $post['customer_name'] ?? 'Walk-in';
+        $paymentMethod = $post['payment_method'] ?? 'CASH';
+        $items = $post['items'] ?? [];
+        if (!is_array($items)) {
+    // If $items is a JSON string, decode it:
+    $items = json_decode($items, true);
+
+    if (!is_array($items)) {
+        // If still not an array, set empty array to avoid errors
+        $items = [];
+    }
+}
+
+        // if (empty($items)) {
+        //     Yii::$app->session->setFlash('error', 'No items selected for sale.');
+        //     return $this->redirect(['site/sale']);
+        // }
+
+        $totalAmount = 0;
+foreach ($items as $item) {
+    $quantity = (int)($item['quantity'] ?? 0);
+    $price = (float)($item['price'] ?? 0);
+    $totalAmount += $quantity * $price;
+}
+
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $sale = new \frontend\models\Sale();
+            $sale->customer_name = $customerName;
+            $sale->payment_method = $paymentMethod;
+            $sale->total_amount = $totalAmount;
+            $sale->save(false);
+
+            foreach ($items as $item) {
+    $stock = \frontend\models\Stock::findOne($item['stock_id']);
+    if (!$stock) {
+        throw new \yii\web\NotFoundHttpException("Stock ID {$item['stock_id']} not found.");
+    }
+    if ($stock->quantity < $item['quantity']) {
+        throw new \Exception("Not enough stock for item: {$stock->item_name}");
+    }
+
+    $stock->quantity -= $item['quantity'];
+    $stock->save(false);
+
+    $saleItem = new \frontend\models\SaleItem();
+    $saleItem->sale_id = $sale->id;
+    $saleItem->stock_id = $item['stock_id'];
+    $saleItem->quantity = $item['quantity'];
+    $saleItem->price = $item['price'];
+    $saleItem->discount = $item['discount'] ?? 0;
+    $saleItem->amount = $item['amount'];
+    $saleItem->save(false);
+}
+
+
+            $transaction->commit();
+            Yii::$app->session->setFlash('success', 'Sale saved successfully.');
+            return $this->redirect(['site/sale']);
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', 'Failed to save sale: ' . $e->getMessage());
+            return $this->redirect(['site/sale']);
+        }
+    }
+
+    // GET request part (unchanged)
+    $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
+
+    if (empty($stocks)) {
+        Yii::error('No stock items available for sale.');
+    }
+
+    return $this->render('index', [
+        'view' => 'sale',
+        'stocks' => $stocks,
+    ]);
+}
+
+public function actionSalesReport(){
+    $sales = \frontend\models\Sale::find()->orderBy(['id' => SORT_DESC])->all();
+    if (empty($sales)) {
+        Yii::$app->session->setFlash('info', 'No sales records found.');
+    }
+    return $this->render('index', [
+        'view' => 'salesrpt',
+        'sales' => $sales,
+    ]);
+}
+
+
+
 
    public function actionDashboard()
 {
@@ -148,14 +248,23 @@ class SiteController extends Controller
     $showStock = Yii::$app->request->get('showStock', 0);
 
     $stocks = [];
+    $sales = [];
     if ($view == 'current_stock') {
         $stocks = \frontend\models\ShowStock::find()->orderBy(['id' => SORT_DESC])->all();
     }
     elseif ($view == 'manage_stock') {
         $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
     }
+    elseif ($view == 'sale'){
+        $stocks= \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
+
+    }
+    elseif ($view == 'salesrpt') {
+        $sales = \frontend\models\Sale::find()->orderBy(['id' => SORT_DESC])->all();
+        }
 
     return $this->render('index', [
+        'sales' => $sales,
         'model' => $model,
         'view' => $view,
         'showAddStock' => $showAddStock,
@@ -163,6 +272,8 @@ class SiteController extends Controller
         'showStock' => $showStock,
     ]);
 }
+// SALE 
+
 
 
 
@@ -472,34 +583,6 @@ public function actionAdjustStock($id = null)
     ]);
 }
 
-// public function actionSaveAdjustment($id)
-// {
-//     if (Yii::$app->request->isPost) {
-//         $stock = Stock::findOne($id);
-//         if (!$stock) {
-//             throw new NotFoundHttpException('Item not found.');
-//         }
-
-//         $quantity = Yii::$app->request->post('quantity');
-//         $reason = Yii::$app->request->post('reason');
-//         $source = Yii::$app->request->post('source');
-
-//         // Example logic: increase stock quantity
-//         $stock->quantity += (int)$quantity;
-
-//         if ($stock->save()) {
-//             Yii::$app->session->setFlash('success', 'Stock adjusted successfully.');
-//         } else {
-//             Yii::$app->session->setFlash('error', 'Failed to adjust stock.');
-//         }
-
-//         return $this->redirect(['site/index']);
-//     }
-
-//     throw new BadRequestHttpException('Invalid request method.');
-// }
-
-
 
 public function actionDeleteStock($id)
 {
@@ -512,9 +595,9 @@ public function actionDeleteStock($id)
     }
 
     return $this->redirect(['site/index', 'view' => 'manage_stock']);
-
-
-    
-
 }
+
+
+
+
 }

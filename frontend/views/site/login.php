@@ -13,7 +13,7 @@ $this->title = 'Login';
 <div class="flex items-stretch h-screen bg-cover bg-center relative bg-no-repeat bg-[url('../images/bg-auth.jpg')]" >
     <div class="bg-white lg:max-w-[480px] z-10 p-12 relative w-full h-full border-t-[3px] border-primary" >
         <!-- div for form  -->
-        <div class="flex flex-col h-full gap-4"  style="background-color:rgb(11, 12, 12);">
+        <div class="flex flex-col h-full gap-4">
 
             <div class="mb-8 text-center lg:text-start">
                 <b><h1 class="text-white/70 text-lg font-semibold dark:text-light/80 mb-2"><a href="<?= Yii::$app->homeUrl ?>" ><?= Html::encode(Yii::$app->params['appName']) ?></a> Sign In</h1></b>

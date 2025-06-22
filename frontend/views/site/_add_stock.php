@@ -42,12 +42,15 @@ use yii\widgets\ActiveForm;
         </div>
         <div>
             <?= $form->field($model, 'buying_price')->textInput([
+                'placeholder' => '@0.00',
                 'number', 
                 'step' => '0.01', 'min' => 0, 'class'=> 'form-input'
                 ])->label('Buying Price', ['class'=>'mb-2 block']) ?>
         </div>
         <div>
-            <?= $form->field($model, 'selling_price')->textInput(['number', 'step' => '0.01', 'min' => 0,
+            <?= $form->field($model, 'selling_price')->textInput(['number', 
+            'placeholder' => '@0.00',
+            'step' => '0.01', 'min' => 0,
             'class'=> 'form-input'
             ])->label('Selling Price', ['class'=>'mb-2 block']) ?>
 
