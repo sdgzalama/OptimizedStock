@@ -20,7 +20,7 @@ function formatTZS($amount) {
 
 ?>
 
-<div class="container mx-auto px-4 py-6">
+<div class="container mx-auto px-4 py-6" >
     <h3 class="text-2xl font-bold mb-6 text-gray-800">Sales Datials</h3>
 
     <!-- SUMMARY CARD  -->

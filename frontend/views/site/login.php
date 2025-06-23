@@ -26,8 +26,8 @@ $this->title = 'Login';
                     <div class="mb-6 space-y-2">
                         <?= $form->field($model, 'username')->textInput([
                             'class' => 'form-input',
-                            'placeholder' => 'Enter your email'
-                        ])->label('Email address', ['class' => 'font-semibold text-gray-500']) ?>
+                            'placeholder' => 'Enter Username'
+                        ])->label('Username', ['class' => 'font-semibold text-gray-500']) ?>
                     </div>
 
                     <div class="mb-6 space-y-2">

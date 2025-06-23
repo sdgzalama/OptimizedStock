@@ -119,28 +119,42 @@ class SiteController extends Controller
      * @return mixed
      */
     public function actionIndex()
-    {
-        if (Yii::$app->user->isGuest) {
-            return $this->redirect(['site/login']);
-        }
+{
+    if (Yii::$app->user->isGuest) {
+        return $this->redirect(['site/login']);
+    }
 
-        $model = new \frontend\models\AddStockForm();
-        
-        $showAddStock = (bool) Yii::$app->request->get('showAddStock',false); //I PUT BOOLEAN TO ACTUALLY SHOW IT IS BOOLEAN
-        $view = Yii::$app->request->get('view', 'dashboard'); // default to 'dashboard'
+    $model = new \frontend\models\AddStockForm();
+    $showAddStock = (bool) Yii::$app->request->get('showAddStock', false);
+    $view = Yii::$app->request->get('view', 'dashboard');
 
-        $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
-
+    $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
     $sales = \frontend\models\Sale::find()->orderBy(['created_at' => SORT_DESC])->all();
 
-        return $this->render('index', [ //Pass $model to the view
-            'model' => $model,
-            'view' => $view,
-            'sales' => $sales,
-            'showAddStock' => $showAddStock,
-            'stocks'=> $stocks
-        ]);
+    // this block to define totals for dashboard
+    $totalItems = count($stocks);
+    $totalStockValue = 0;
+    $lowStockCount = 0;
+
+    foreach ($stocks as $stock) {
+        $totalStockValue += ($stock->quantity * $stock->selling_price);
+        if ($stock->quantity <= 5) {
+            $lowStockCount++;
+        }
     }
+
+    return $this->render('index', [
+        'model' => $model,
+        'view' => $view,
+        'sales' => $sales,
+        'showAddStock' => $showAddStock,
+        'stocks' => $stocks,
+        'totalItems' => $totalItems,
+        'totalStockValue' => $totalStockValue,
+        'lowStockCount' => $lowStockCount,
+    ]);
+}
+
    public function actionSale()
 {
     if (Yii::$app->request->isPost) {
@@ -240,7 +254,7 @@ public function actionSalesReport(){
 
 
 
-   public function actionDashboard()
+public function actionDashboard()
 {
     $model = new \frontend\models\AddStockForm();
     $view = Yii::$app->request->get('view', 'dashboard');
@@ -249,19 +263,34 @@ public function actionSalesReport(){
 
     $stocks = [];
     $sales = [];
+    $totalItems = 0;
+    $totalStockValue = 0;
+    $lowStockCount = 0;
+
+    // Always calculate totalItems, totalStockValue, and lowStockCount for dashboard
+    if ($view == 'dashboard') {
+        $stocks = \frontend\models\Stock::find()->all();
+
+        foreach ($stocks as $stock) {
+            $totalItems += $stock->quantity;
+        }
+
+        foreach ($stocks as $stock) {
+            $totalStockValue += ($stock->quantity * $stock->selling_price);
+            if ($stock->quantity <= 5) { // Change '5' to any threshold you define as low
+                $lowStockCount++;
+            }
+        }
+    }
+
+    // Only load these if requested view requires them
     if ($view == 'current_stock') {
         $stocks = \frontend\models\ShowStock::find()->orderBy(['id' => SORT_DESC])->all();
-    }
-    elseif ($view == 'manage_stock') {
+    } elseif ($view == 'manage_stock' || $view == 'sale') {
         $stocks = \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
-    }
-    elseif ($view == 'sale'){
-        $stocks= \frontend\models\Stock::find()->orderBy(['id' => SORT_DESC])->all();
-
-    }
-    elseif ($view == 'salesrpt') {
+    } elseif ($view == 'salesrpt') {
         $sales = \frontend\models\Sale::find()->orderBy(['id' => SORT_DESC])->all();
-        }
+    }
 
     return $this->render('index', [
         'sales' => $sales,
@@ -270,9 +299,14 @@ public function actionSalesReport(){
         'showAddStock' => $showAddStock,
         'stocks' => $stocks,
         'showStock' => $showStock,
+        'totalItems' => $totalItems,
+        'totalStockValue' => $totalStockValue,
+        'lowStockCount' => $lowStockCount,
     ]);
 }
+
 // SALE 
+
 
 
 

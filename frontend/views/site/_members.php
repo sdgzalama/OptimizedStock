@@ -37,22 +37,22 @@ $increment = 1;
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-3 border border-gray-300"><?= $increment++ ?></td>
                             <td class="px-4 py-3 border border-gray-300 font-medium">SIDAGA WAZIRI</td>
-                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01357</td>
+                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01436</td>
                         </tr>
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-3 border border-gray-300"><?= $increment++ ?></td>
                             <td class="px-4 py-3 border border-gray-300 font-medium">TAJI FILBERT KIKOTI</td>
-                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01357</td>
+                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01381</td>
                         </tr>
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-3 border border-gray-300"><?= $increment++ ?></td>
                             <td class="px-4 py-3 border border-gray-300 font-medium">AZIZ IDDI MOHAMMED</td>
-                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01357</td>
+                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01305</td>
                         </tr>
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-4 py-3 border border-gray-300"><?= $increment++ ?></td>
                             <td class="px-4 py-3 border border-gray-300 font-medium">JOHN B MANGASALA</td>
-                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01357</td>
+                            <td class="px-4 py-3 border border-gray-300">EASTC/BDTS/24/01459</td>
                         </tr>
                     </tbody>
                 </table>

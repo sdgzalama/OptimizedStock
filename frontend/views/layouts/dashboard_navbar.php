@@ -71,11 +71,7 @@
                             <span class="menu-text">Stock Adjustment</span>
                         </a>
                     </li>
-                    <li class="menu-item">
-                        <a href="" class="menu-link">
-                            <span class="menu-text">Sale</span>
-                        </a>
-                    </li>
+                    
                 </ul>
             </li>
              <li class="menu-title">Reports</li>

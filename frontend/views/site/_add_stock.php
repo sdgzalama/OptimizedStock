@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="">
+<div class="" >
 
     <div class="p-6">
         <div class="flex justify-between items-center">
